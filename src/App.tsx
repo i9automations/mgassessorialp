@@ -11,11 +11,9 @@ import {
 import {
   ArrowRight,
   ArrowUpRight,
-  BadgeCheck,
   Brush,
   CheckCircle2,
   Handshake,
-  Layers,
   Map,
   Megaphone,
   MessageCircle,
@@ -27,7 +25,6 @@ import {
   Target,
   Users,
   Video,
-  Zap,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -120,28 +117,6 @@ const clients = [
   { image: '/assets/client-vilma.png', handle: '@bolsasvilmamirian', category: 'Moda e Acessórios' },
   { image: '/assets/client-basic.png', handle: '@basicoficial_', category: 'Moda Feminina' },
   { image: '/assets/client-comercial.png', handle: '@comercialtextilstore', category: 'Têxtil' },
-];
-
-const kineticCards = [
-  { title: 'Branding', label: 'identidade com consistência', icon: BadgeCheck },
-  { title: 'Conteúdo', label: 'ritmo, volume e intenção', icon: Layers },
-  { title: 'Performance', label: 'criativos preparados para vender', icon: Zap },
-];
-
-const signalCards = [
-  {
-    title: 'Leitura de marca',
-    text: 'Antes de postar, organizamos posicionamento, audiência, oferta e tom de voz.',
-    icon: Target,
-  },
-  {
-    title: 'Sistema visual',
-    text: 'A comunicação ganha padrões, variações e repertório para não depender de peças soltas.',
-  },
-  {
-    title: 'Conteúdo com tração',
-    text: 'Cada entrega conecta branding, comunidade e venda com uma cadência clara.',
-  },
 ];
 
 const faqs = [
@@ -273,10 +248,6 @@ function TopNav() {
       animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
     >
-      <a className="top-nav-brand" href="#top" aria-label="Voltar para o início">
-        <img src={assets.logo} alt="MG Digital" decoding="async" />
-        <span>MG Digital</span>
-      </a>
       <div className="top-nav-links" aria-label="Seções da página">
         <a href="#servicos">Serviços</a>
         <a href="#clientes">Clientes</a>
@@ -354,36 +325,6 @@ function Hero() {
           <CtaButton href="#servicos" variant="secondary">Ver serviços</CtaButton>
         </motion.div>
       </motion.div>
-      <motion.div
-        className="hero-kinetic-stack"
-        aria-hidden="true"
-        initial={shouldReduceMotion ? false : { opacity: 0, x: 34 }}
-        animate={shouldReduceMotion ? undefined : { opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {kineticCards.map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <motion.div
-              className="kinetic-card"
-              key={card.title}
-              animate={shouldReduceMotion ? undefined : { y: [0, -4, 0] }}
-              transition={{
-                duration: 5.4 + index * 0.35,
-                delay: index * 0.22,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              <Icon size={18} />
-              <span>
-                <strong>{card.title}</strong>
-                {card.label}
-              </span>
-            </motion.div>
-          );
-        })}
-      </motion.div>
     </header>
   );
 }
@@ -399,64 +340,6 @@ function LogoStrip() {
         {logoItems.map((logo, index) => (
           <img key={`${logo}-${index}`} src={logo} alt="" loading="lazy" decoding="async" />
         ))}
-      </div>
-    </section>
-  );
-}
-
-function SignalBoard() {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <section className="signal-section" aria-label="Sistema de crescimento MG Digital">
-      <div className="section-container signal-shell">
-        <Reveal className="signal-copy">
-          <SectionKicker invert>Estrutura de crescimento</SectionKicker>
-          <h2>
-            Menos peças soltas.
-            <span> Mais sistema de marca.</span>
-          </h2>
-          <p>
-            A MG organiza estratégia, identidade e conteúdo em uma rotina clara para sua marca
-            ganhar presença sem perder consistência.
-          </p>
-        </Reveal>
-        <motion.div
-          className="signal-board"
-          variants={stagger}
-          initial={shouldReduceMotion ? false : 'hidden'}
-          whileInView={shouldReduceMotion ? undefined : 'visible'}
-          viewport={{ once: true, amount: 0.18 }}
-        >
-          <div className="signal-board-head">
-            <span>MG Growth System</span>
-            <strong>3 frentes em movimento</strong>
-          </div>
-          <div className="signal-grid">
-            {signalCards.map((card, index) => (
-              <motion.article
-                className="signal-card"
-                variants={reveal}
-                whileHover={shouldReduceMotion ? undefined : { y: -6, x: index === 1 ? 3 : 0 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                key={card.title}
-              >
-                <div className="signal-step" aria-hidden="true">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                </div>
-                <div>
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                </div>
-                <div className="signal-bars" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );
@@ -808,7 +691,6 @@ export default function App() {
       <TopNav />
       <Hero />
       <LogoStrip />
-      <SignalBoard />
       <Pillars />
       <Services />
       <Clients />
