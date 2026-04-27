@@ -225,7 +225,7 @@ function CtaButton({
     <motion.a
       className={`cta-button cta-button-${variant}`}
       href={href}
-      whileHover={shouldReduceMotion ? undefined : { y: -2, scale: 1.01 }}
+      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.025 }}
       whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 360, damping: 22 }}
     >
@@ -288,11 +288,61 @@ function Hero() {
         alt=""
         fetchPriority="high"
         decoding="async"
-        initial={shouldReduceMotion ? false : { opacity: 0 }}
-        animate={shouldReduceMotion ? undefined : { opacity: 1 }}
-        transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+        initial={
+          shouldReduceMotion
+            ? false
+            : {
+                opacity: 0,
+                x: 26,
+                clipPath: 'polygon(72% 0%, 100% 0%, 100% 100%, 62% 100%)',
+              }
+        }
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : {
+                opacity: 1,
+                x: 0,
+                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+              }
+        }
+        transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
         style={{ y: heroY, scale: heroScale }}
       />
+      {!shouldReduceMotion && (
+        <>
+          <motion.div
+            className="hero-photo-sweep"
+            aria-hidden="true"
+            initial={{ opacity: 0, x: '-120%' }}
+            animate={{ opacity: [0, 0.7, 0], x: '135%' }}
+            transition={{
+              duration: 1.18,
+              delay: 0.22,
+              repeat: Infinity,
+              repeatDelay: 2.9,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          />
+          <motion.div
+            className="hero-photo-glow"
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1 }}
+            animate={{
+              opacity: [0.18, 0.5, 0.28, 0.42],
+              scale: [1, 1.025, 1.01, 1.02],
+              x: [0, -10, 0],
+            }}
+            transition={{
+              duration: 5.8,
+              delay: 0.8,
+              repeat: Infinity,
+              repeatType: 'mirror',
+              ease: 'easeInOut',
+            }}
+          />
+        </>
+      )}
       <motion.div
         className="hero-content"
         initial={shouldReduceMotion ? false : 'hidden'}
@@ -373,7 +423,7 @@ function Pillars() {
             <motion.article
               className="pillar-card"
               variants={reveal}
-              whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.012 }}
+              whileHover={shouldReduceMotion ? undefined : { y: -12, scale: 1.018 }}
               transition={{ type: 'spring', stiffness: 280, damping: 24 }}
               key={pillar.title}
             >
@@ -414,7 +464,7 @@ function Services() {
             <motion.article
               className={`service-card ${service.featured ? 'service-card-featured' : ''}`}
               variants={reveal}
-              whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.01 }}
+              whileHover={shouldReduceMotion ? undefined : { y: -10, scale: 1.018 }}
               transition={{ type: 'spring', stiffness: 320, damping: 25 }}
               key={service.step}
             >
@@ -565,6 +615,7 @@ function FAQ() {
               variants={reveal}
               initial="hidden"
               whileInView="visible"
+              whileHover={shouldReduceMotion ? undefined : { x: 6 }}
               viewport={{ once: true, amount: 0.2 }}
             >
               <button

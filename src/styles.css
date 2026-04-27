@@ -125,6 +125,66 @@ a {
   }
 }
 
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 12px 28px rgba(235, 41, 104, 0.32);
+  }
+  50% {
+    box-shadow: 0 18px 42px rgba(235, 41, 104, 0.52);
+  }
+}
+
+@keyframes ribbon-glow {
+  0%,
+  100% {
+    box-shadow: 8px 8px 0 rgba(235, 41, 104, 0.18);
+  }
+  50% {
+    box-shadow: 8px 8px 0 rgba(235, 41, 104, 0.3), 0 0 28px rgba(235, 41, 104, 0.16);
+  }
+}
+
+@keyframes client-line-pulse {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scaleY(0.72);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes accent-flow {
+  0% {
+    background-position: 0 0%;
+  }
+  100% {
+    background-position: 0 200%;
+  }
+}
+
+@keyframes form-grid-drift {
+  0% {
+    background-position: 0% 0%, 0 0, 0 0;
+  }
+  100% {
+    background-position: 180% 0%, 28px 28px, 28px 28px;
+  }
+}
+
+@keyframes faq-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(235, 41, 104, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(235, 41, 104, 0);
+  }
+}
+
 @keyframes marquee-third {
   from {
     transform: translate3d(0, 0, 0);
@@ -455,6 +515,7 @@ a {
 .cta-button-primary {
   background: linear-gradient(180deg, #f33176 0%, var(--pink) 100%);
   box-shadow: 0 12px 28px rgba(235, 41, 104, 0.32);
+  animation: cta-pulse 3.8s ease-in-out infinite;
 }
 
 .cta-button-secondary {
@@ -567,9 +628,48 @@ a {
   will-change: transform, opacity;
 }
 
+.hero-photo-sweep {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  width: min(58vw, 860px);
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 36%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.5) 52%,
+    rgba(235, 41, 104, 0.1) 57%,
+    transparent 68%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hero-photo-glow {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  width: min(62vw, 920px);
+  height: 100%;
+  background:
+    radial-gradient(circle at 62% 24%, rgba(255, 255, 255, 0.34), transparent 22%),
+    radial-gradient(circle at 74% 56%, rgba(235, 41, 104, 0.16), transparent 26%),
+    radial-gradient(circle at 48% 78%, rgba(232, 210, 150, 0.18), transparent 24%);
+  clip-path: polygon(13% 0%, 100% 0%, 100% 100%, 0% 100%);
+  filter: blur(1px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(100%, 760px);
   padding: 126px 0 88px;
   margin-left: max(6vw, 92px);
@@ -596,6 +696,7 @@ a {
   font-size: 40px;
   font-weight: 700;
   line-height: 1;
+  animation: ribbon-glow 3.6s ease-in-out infinite;
 }
 
 .hero-ribbon::after {
@@ -607,6 +708,7 @@ a {
   background: linear-gradient(90deg, var(--pink), var(--gold), var(--pink));
   background-size: 200% 100%;
   content: '';
+  animation: border-flow 2.6s linear infinite;
 }
 
 .hero-copy {
@@ -757,6 +859,7 @@ a {
   top: 38px;
   right: 38px;
   background: rgba(255, 255, 255, 0.86);
+  animation: icon-breathe 3.6s ease-in-out infinite;
 }
 
 .pillar-card img {
@@ -847,10 +950,29 @@ a {
   transition: border-color var(--motion-base) ease, box-shadow var(--motion-base) ease, background var(--motion-base) ease;
 }
 
+.service-card::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(235, 41, 104, 0.2), transparent 32%),
+    linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.12), transparent 62%);
+  content: '';
+  opacity: 0;
+  transform: translateX(-18%);
+  transition: opacity var(--motion-base) ease, transform var(--motion-slow) var(--ease-out-expo);
+  pointer-events: none;
+}
+
 .service-card:hover {
   border-color: rgba(235, 41, 104, 0.48);
   background: rgba(255, 255, 255, 0.06);
   box-shadow: var(--shadow-brand);
+}
+
+.service-card:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .service-card-featured {
@@ -869,6 +991,7 @@ a {
   transform: scaleX(0.72);
   transform-origin: 0 50%;
   transition: transform var(--motion-slow) var(--ease-out-expo), opacity var(--motion-base) ease;
+  animation: border-flow 3.2s linear infinite;
 }
 
 .service-card:hover .service-glow-line {
@@ -977,6 +1100,19 @@ a {
   transition: transform var(--motion-base) var(--ease-out-expo);
 }
 
+.client-item::before {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: -1px;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--pink), var(--gold), var(--pink));
+  content: '';
+  transform-origin: 50% 50%;
+  animation: client-line-pulse 3s ease-in-out infinite;
+}
+
 .client-item:hover {
   transform: translateY(-5px);
 }
@@ -1082,6 +1218,7 @@ a {
   background: linear-gradient(180deg, var(--pink), var(--gold), var(--pink));
   background-size: 100% 200%;
   content: '';
+  animation: accent-flow 4s linear infinite;
 }
 
 .founder-card h2 {
@@ -1212,6 +1349,10 @@ a {
   box-shadow: 0 18px 44px rgba(235, 41, 104, 0.11);
 }
 
+.faq-open {
+  box-shadow: 0 20px 50px rgba(235, 41, 104, 0.13);
+}
+
 .faq-item:hover::before,
 .faq-open::before {
   opacity: 1;
@@ -1252,6 +1393,10 @@ a {
 
 .faq-item:hover .faq-icon {
   box-shadow: 0 0 0 8px rgba(235, 41, 104, 0.14);
+}
+
+.faq-open .faq-icon {
+  animation: faq-glow 2.8s ease-in-out infinite;
 }
 
 .faq-answer {
@@ -1391,6 +1536,7 @@ a {
   background-size: 180% 100%, 28px 28px, 28px 28px;
   content: '';
   opacity: 0.55;
+  animation: form-grid-drift 9s linear infinite;
   pointer-events: none;
 }
 
@@ -1420,6 +1566,7 @@ a {
   line-height: 1.3;
   text-transform: uppercase;
   transition: opacity 180ms ease, box-shadow 180ms ease;
+  animation: cta-pulse 3.6s ease-in-out infinite;
 }
 
 .submit-button::before {
@@ -1451,6 +1598,7 @@ a {
 }
 
 .submit-button:disabled {
+  animation: none;
   cursor: wait;
   opacity: 0.72;
   box-shadow: 0 0 10px rgba(235, 41, 104, 0.35);
@@ -1553,6 +1701,11 @@ a {
   .hero-bg {
     opacity: 0.72;
     object-position: 66% center;
+  }
+
+  .hero-photo-sweep,
+  .hero-photo-glow {
+    display: none;
   }
 
   .hero-content {
