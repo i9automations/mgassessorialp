@@ -37,6 +37,12 @@ const assets = {
     '/assets/logo-phersonalize.png',
     '/assets/logo-utilizatto.png',
     '/assets/logo-hiatto.png',
+    '/assets/logo-extra-02.png',
+    '/assets/logo-extra-03.png',
+    '/assets/logo-extra-04.png',
+    '/assets/logo-extra-05.png',
+    '/assets/logo-extra-06.png',
+    '/assets/logo-extra-07.png',
   ],
   founder: '/assets/optimized/founder.jpg',
   hypeaBg: '/assets/hypea-logo-bg.png',
@@ -117,6 +123,23 @@ const clients = [
   { image: '/assets/client-vilma.png', handle: '@bolsasvilmamirian', category: 'Moda e Acessórios' },
   { image: '/assets/client-basic.png', handle: '@basicoficial_', category: 'Moda Feminina' },
   { image: '/assets/client-comercial.png', handle: '@comercialtextilstore', category: 'Têxtil' },
+];
+
+const clientFeedbacks = [
+  {
+    image: '/assets/feedbacks/feedback-01.jpg',
+    alt: 'Feedback de cliente MG Digital 1',
+    comment:
+      'De 2.700 pedidos, gravamos hoje a remessa do final de semana. Foi um sucesso nosso esquenta black! Que venha oficialmente a maior Black da história da Basic.',
+  },
+  { image: '/assets/feedbacks/feedback-02.jpg', alt: 'Feedback de cliente MG Digital 2' },
+  { image: '/assets/feedbacks/feedback-03.jpg', alt: 'Feedback de cliente MG Digital 3' },
+  { image: '/assets/feedbacks/feedback-04.jpg', alt: 'Feedback de cliente MG Digital 4' },
+  { image: '/assets/feedbacks/feedback-05.jpg', alt: 'Feedback de cliente MG Digital 5' },
+  { image: '/assets/feedbacks/feedback-06.jpg', alt: 'Feedback de cliente MG Digital 6' },
+  { image: '/assets/feedbacks/feedback-07.jpg', alt: 'Feedback de cliente MG Digital 7' },
+  { image: '/assets/feedbacks/feedback-08.jpg', alt: 'Feedback de cliente MG Digital 8' },
+  { image: '/assets/feedbacks/feedback-09.jpg', alt: 'Feedback de cliente MG Digital 9' },
 ];
 
 const faqs = [
@@ -486,7 +509,9 @@ function Services() {
 }
 
 function Clients() {
+  const shouldReduceMotion = useReducedMotion();
   const marqueeItems = [...clients, ...clients];
+  const feedbackItems = [...clientFeedbacks, ...clientFeedbacks];
 
   return (
     <section className="section section-dark clients-section" id="clientes">
@@ -517,6 +542,29 @@ function Clients() {
           ))}
         </div>
       </div>
+      <Reveal className="client-feedbacks">
+        <div className="feedback-marquee" aria-label="Feedbacks de clientes MG Digital">
+          <div className="feedback-track">
+            {feedbackItems.map((feedback, index) => (
+              <motion.figure
+                className={`feedback-card${feedback.comment ? ' feedback-card-special' : ''}`}
+                whileHover={shouldReduceMotion ? undefined : { y: -8, scale: 1.015 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+                key={`${feedback.image}-${index}`}
+              >
+                <img
+                  src={feedback.image}
+                  alt={index < clientFeedbacks.length ? feedback.alt : ''}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {feedback.comment && <figcaption>{feedback.comment}</figcaption>}
+                <span aria-hidden="true">{String((index % clientFeedbacks.length) + 1).padStart(2, '0')}</span>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+      </Reveal>
     </section>
   );
 }
