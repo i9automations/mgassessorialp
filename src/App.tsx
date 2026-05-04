@@ -1,4 +1,5 @@
-import { FormEvent, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AnimatePresence,
   motion,
@@ -12,7 +13,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   Brush,
-  CheckCircle2,
   Handshake,
   Map,
   Megaphone,
@@ -21,10 +21,9 @@ import {
   Palette,
   Plus,
   ShoppingCart,
-  Sparkles,
   Target,
-  Users,
   Video,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -173,17 +172,7 @@ const faqs = [
   },
 ];
 
-const formFields = [
-  { label: 'Nome completo', name: 'name', type: 'text', autoComplete: 'name', required: true },
-  { label: 'E-mail', name: 'email', type: 'email', autoComplete: 'email', required: true },
-  { label: 'Telefone', name: 'phone', type: 'tel', autoComplete: 'tel', required: true },
-  { label: 'Nome da marca', name: 'brand', type: 'text', autoComplete: 'organization', required: true },
-  { label: 'Instagram da marca', name: 'instagram', type: 'text', autoComplete: 'off', required: true },
-  { label: 'Site da marca', name: 'website', type: 'url', autoComplete: 'url', required: false },
-  { label: 'Faturamento mensal aproximado', name: 'revenue', type: 'text', autoComplete: 'off', required: true },
-  { label: 'Maior desafio da marca hoje', name: 'challenge', type: 'text', autoComplete: 'off', required: false },
-  { label: 'Como você nos conheceu?', name: 'source', type: 'text', autoComplete: 'off', required: false },
-] as const;
+const ghlSurveyUrl = 'https://funil.mgassessoriadigital.com/survey';
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 26 },
@@ -309,7 +298,7 @@ function Hero() {
         className="hero-bg"
         src={assets.hero}
         alt=""
-        fetchPriority="high"
+        loading="eager"
         decoding="async"
         initial={
           shouldReduceMotion
@@ -703,15 +692,95 @@ function FAQ() {
 }
 
 function Contact() {
-  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [isSurveyOpen, setIsSurveyOpen] = useState(false);
+  const [surveyVersion, setSurveyVersion] = useState(0);
   const shouldReduceMotion = useReducedMotion();
-  const isSending = formStatus === 'sending';
+  const surveySrc = surveyVersion > 0 ? `${ghlSurveyUrl}?lp_modal=${surveyVersion}` : ghlSurveyUrl;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setFormStatus('sending');
-    window.setTimeout(() => setFormStatus('sent'), 650);
+  function openSurvey() {
+    setSurveyVersion(Date.now());
+    setIsSurveyOpen(true);
   }
+
+  useEffect(() => {
+    if (!isSurveyOpen) {
+      return;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsSurveyOpen(false);
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isSurveyOpen]);
+
+  const surveyModal = (
+    <AnimatePresence>
+      {isSurveyOpen && (
+        <motion.div
+          className="survey-modal-backdrop"
+          role="presentation"
+          onMouseDown={() => setIsSurveyOpen(false)}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div
+            className="survey-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="survey-modal-title"
+            onMouseDown={(event) => event.stopPropagation()}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+            exit={shouldReduceMotion ? undefined : { opacity: 0, y: 12, scale: 0.99 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="survey-modal-header">
+              <div>
+                <span>Diagnóstico MG Digital</span>
+                <h3 id="survey-modal-title">Diagnóstico estratégico</h3>
+              </div>
+              <button
+                className="survey-modal-close"
+                type="button"
+                aria-label="Fechar formulário"
+                onClick={() => setIsSurveyOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="survey-modal-body">
+              <div className="ghl-survey-shell">
+                <iframe
+                  className="ghl-survey-frame"
+                  src={surveySrc}
+                  title="Formulário MG Digital"
+                  loading="eager"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  scrolling="no"
+                />
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <section className="section section-dark contact-section" id="formulario">
@@ -732,53 +801,25 @@ function Contact() {
           </p>
         </Reveal>
         <Reveal>
-          <form className="lead-form" onSubmit={handleSubmit}>
-            {formFields.map((field) => (
-              <label key={field.name}>
-                <span>
-                  {field.label}
-                  {field.required && <b aria-hidden="true"> *</b>}
-                </span>
-                <input
-                  type={field.type}
-                  name={field.name}
-                  required={field.required}
-                  autoComplete={field.autoComplete}
-                />
-              </label>
-            ))}
+          <div className="contact-cta-panel">
+            <span>Diagnóstico MG Digital</span>
+            <h3>Conte sobre o momento da sua marca e receba o próximo passo da equipe MG.</h3>
             <motion.button
-              className="submit-button"
-              type="submit"
-              disabled={isSending}
-              aria-busy={isSending}
-              whileHover={shouldReduceMotion || isSending ? undefined : { y: -2 }}
-              whileTap={shouldReduceMotion || isSending ? undefined : { scale: 0.98 }}
+              className="contact-modal-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded={isSurveyOpen}
+              onClick={openSurvey}
+              whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             >
-              <span>
-                {isSending
-                  ? 'Enviando...'
-                  : formStatus === 'sent'
-                    ? 'Recebido pela equipe MG'
-                    : 'Quero começar a transformação da minha marca'}
-              </span>
-              {formStatus === 'sent' ? <CheckCircle2 size={18} /> : <ArrowRight size={18} />}
+              <span>Preencher diagnóstico</span>
+              <ArrowRight size={18} />
             </motion.button>
-            <p className="privacy">*Seus dados estão seguros. Sem spam, nunca.</p>
-            <div aria-live="polite">
-              {formStatus === 'sent' && (
-                <motion.p
-                  className="form-status"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  Formulário recebido. Em breve a equipe MG entra em contato.
-                </motion.p>
-              )}
-            </div>
-          </form>
+          </div>
         </Reveal>
       </div>
+      {createPortal(surveyModal, document.body)}
     </section>
   );
 }
