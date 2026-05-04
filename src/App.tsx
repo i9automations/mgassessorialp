@@ -172,7 +172,31 @@ const faqs = [
   },
 ];
 
-const ghlSurveyUrl = 'https://funil.mgassessoriadigital.com/survey';
+const ghlSurveyUrls = {
+  organic: 'https://funil.mgassessoriadigital.com/survey',
+  traffic: 'https://funil.mgassessoriadigital.com/survey-388238',
+};
+
+function getActiveSurveyUrl() {
+  const normalizedPath = window.location.pathname.replace(/\/+$/, '');
+
+  return normalizedPath === '/trafego' ? ghlSurveyUrls.traffic : ghlSurveyUrls.organic;
+}
+
+function buildSurveySrc(surveyUrl: string, surveyVersion: number) {
+  const src = new URL(surveyUrl);
+  const currentParams = new URLSearchParams(window.location.search);
+
+  currentParams.forEach((value, key) => {
+    src.searchParams.set(key, value);
+  });
+
+  if (surveyVersion > 0) {
+    src.searchParams.set('lp_modal', String(surveyVersion));
+  }
+
+  return src.toString();
+}
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 26 },
@@ -695,7 +719,7 @@ function Contact() {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
   const [surveyVersion, setSurveyVersion] = useState(0);
   const shouldReduceMotion = useReducedMotion();
-  const surveySrc = surveyVersion > 0 ? `${ghlSurveyUrl}?lp_modal=${surveyVersion}` : ghlSurveyUrl;
+  const surveySrc = buildSurveySrc(getActiveSurveyUrl(), surveyVersion);
 
   function openSurvey() {
     setSurveyVersion(Date.now());
